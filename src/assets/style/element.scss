@@ -1,0 +1,13 @@
+.element-plus-drop-menu {
+  width: 160px;
+  background-color: #2B2B2B !important;
+  border: none;
+  .el-dropdown-menu__item {
+    padding-left: 30px;
+    img {
+      margin-right: 10px;
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
