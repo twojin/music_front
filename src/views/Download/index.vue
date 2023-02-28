@@ -1,9 +1,9 @@
 <template>
-  <LayOut></LayOut>
+  <div>下载客户端</div>
 </template>
 
 <script setup>
-import LayOut from '@/layout'
+
 </script>
 
 <style lang="scss">

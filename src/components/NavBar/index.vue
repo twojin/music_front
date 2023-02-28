@@ -6,7 +6,7 @@
         <span class="text">网易云音乐</span>
       </div>
       <div :class="['menus', activeTab === item.title ? 'active-tab' : '']" v-for="(item, index) in menus"
-        :key="item.title" @click="changeMenus(item.title)">
+        :key="item.title" @click="changeMenus(item)">
         {{ item.title }}
         <span :class="[activeTab === item.title ? 'arrow' : '']"></span>
       </div>
@@ -17,113 +17,199 @@
         </div>
         <div class="creater-center">创作者中心</div>
         <div class="user-content">
-          <el-dropdown @command="handleCommand">
-            <span class="el-dropdown-link">
-              <img @mouseenter="openMenus" @mouseleave="closeMenus" class="user-icon"
-                src="https://p4.music.126.net/K_B0VM3lX9GfbsERtGCtqg==/109951163780250740.jpg?param=30y30" alt="">
-              <div class="user-news">{{ '87' }}</div>
-            </span>
-            <template #dropdown>
-              <el-dropdown-menu class="element-plus-drop-menu">
-                <el-dropdown-item command="a">
-                  <img src="@/assets/image/NavBar/user.png" alt=""> 我的主页</el-dropdown-item>
-                <el-dropdown-item command="b"> <img src="@/assets/image/NavBar/email.png" alt=""> 我的消息</el-dropdown-item>
-                <el-dropdown-item command="c"><img src="@/assets/image/NavBar/level.png" alt=""> 我的等级</el-dropdown-item>
-                <el-dropdown-item command="c"><img src="@/assets/image/NavBar/vip.png" alt="">vip会员</el-dropdown-item>
-                <el-dropdown-item command="c" divided><img src="@/assets/image/NavBar/config.png"
-                    alt="">个人设置</el-dropdown-item>
-                <el-dropdown-item command="c"><img src="@/assets/image/NavBar/realname.png" alt="">实名认证</el-dropdown-item>
-                <el-dropdown-item command="e" divided><img src="@/assets/image/NavBar/logout.png"
-                    alt="">退出</el-dropdown-item>
-              </el-dropdown-menu>
-            </template>
-          </el-dropdown>
+          <template v-if="false">
+            <el-dropdown @command="handleCommand">
+              <span class="el-dropdown-link">
+                <img @mouseenter="openMenus" @mouseleave="closeMenus" class="user-icon"
+                  src="https://p4.music.126.net/K_B0VM3lX9GfbsERtGCtqg==/109951163780250740.jpg?param=30y30" alt="">
+                <div class="user-news">{{ '87' }}</div>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu class="element-plus-drop-menu">
+                  <el-dropdown-item command="a">
+                    <img src="@/assets/image/NavBar/user.png" alt=""> 我的主页</el-dropdown-item>
+                  <el-dropdown-item command="b"> <img src="@/assets/image/NavBar/email.png" alt=""> 我的消息</el-dropdown-item>
+                  <el-dropdown-item command="c"><img src="@/assets/image/NavBar/level.png" alt=""> 我的等级</el-dropdown-item>
+                  <el-dropdown-item command="c"><img src="@/assets/image/NavBar/vip.png" alt="">vip会员</el-dropdown-item>
+                  <el-dropdown-item command="c" divided><img src="@/assets/image/NavBar/config.png"
+                      alt="">个人设置</el-dropdown-item>
+                  <el-dropdown-item command="c"><img src="@/assets/image/NavBar/realname.png" alt="">实名认证</el-dropdown-item>
+                  <el-dropdown-item command="e" divided><img src="@/assets/image/NavBar/logout.png"
+                      alt="">退出</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </template>
+          <template v-else>
+            <span class="user-login" @click="login">登录</span>
+          </template>
         </div>
       </div>
+      <!-- <Login :isShow="isShow" @closeDialog="closeDialog"></Login> -->
     </div>
-    <div :class="[activeTab === '发现音乐' ? 'red' : 'red-coll']">
+    
+  </div>
+  <div :class="[activeTab === '发现音乐' ? 'red' : 'red-coll']">
       <div class="red-content" :style="{ display: activeTab === '发现音乐' ? '' : 'none' }">
-        <div :class="['menus2', activeTab2 === item.title ? 'active-tab2' : '']" @click="changeMenus2(item.title)"
+        <div :class="['menus2', activeTab2 === item.title ? 'active-tab2' : '']" @click="changeMenus2(item)"
           v-for="(item, index) in menus2" :key="item.title">
           {{ item.title }}
         </div>
       </div>
     </div>
-  </div>
+
+    <el-dialog v-model="isShow" title="登录">
+      <el-form v-model="formData">
+        <el-form-item label="账号">
+          <el-input v-model="formData.tellphone"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="formData.verifyCode"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="getverifyCode">获取验证码</el-button>
+        <el-button @click="handleLogin">登录</el-button>
+        <el-button @click="hanldleEmail">邮箱登录</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { loginByPhone,getCode, loginByEmail } from '@/api/login'
+// import Login from '../Login';
+const router = useRouter();
 const menus = [
   {
     title: '发现音乐',
-    url: ''
+    url: '/'
   },
   {
     title: '我的音乐',
-    url: ''
+    url: '/mymusic'
   },
   {
     title: '关注',
-    url: ''
+    url: '/focus'
   },
   {
     title: '商城',
-    url: ''
+    url: '/shop'
   },
   {
     title: '音乐人',
-    url: ''
+    url: '/artist'
   },
   {
     title: '下载客户端',
-    url: ''
+    url: '/download'
   }
 ]
 const menus2 = [
   {
     title: '推荐',
-    url: ''
+    url: 'discover'
   },
   {
     title: '排行榜',
-    url: ''
+    url: 'toplist'
   },
   {
     title: '歌单',
-    url: ''
+    url: 'playlist'
   },
   {
     title: '主播电台',
-    url: ''
+    url: 'djradio'
   },
   {
     title: '歌手',
-    url: ''
+    url: 'artists'
   },
   {
     title: '新碟上架',
-    url: ''
+    url: 'album'
   }
 ]
+const enums = {
+  home: '发现音乐',
+  mymusic: '我的音乐',
+  focus: '关注',
+  shop: '商城',
+  artist: '音乐人',
+  download: '下载客户端',
+  discover: '推荐',
+  toplist: '排行榜',
+  playlist: '歌单',
+  djradio: '主播电台',
+  artists: '歌手',
+  album: '新碟上架'
+}
 const activeTab = ref('发现音乐')
 const activeTab2 = ref('推荐')
-const userMenus = ref(null)
-const changeMenus = (title) => {
-  if (title === "商城" || title === "音乐人") {
+const isShow = ref(false)
+const formData = ref({
+  tellphone: '',
+  verifyCode: ''
+});
+const changeMenus = (item) => {
+  if (item.title === "商城" || item.title === "音乐人") {
     //路由跳转新页面
+    let url = router.resolve({
+      path: item.url,
+      query: {
+        id: 18
+      }
+    })
+    window.open(url.href, '_blank')
     return;
   }
-  activeTab.value = title
+  activeTab.value = item.title
+  router.push({
+    path: item.url
+  })
 }
-const changeMenus2 = (title) => {
-  activeTab2.value = title
+const changeMenus2 = (item) => {
+  activeTab2.value = item.title
+  router.push({
+    path: `/home/${item.url}`
+  })
 }
+const handleLogin = async () => {
+  console.log('===>>>', formData.value);
+  const res = await loginByPhone(formData.value.tellphone, formData.value.verifyCode)
+  console.log('res',res);
+}
+const getverifyCode = async () => {
+  const res = await getCode(formData.value.tellphone)
+  console.log('code', res);
+}
+const hanldleEmail = async () => {
+  const res = await loginByEmail(formData.value.tellphone, formData.value.verifyCode)
+  console.log('email',res);
+}
+onMounted(() => {
+  const routerArray = window.location.hash.split('/');
+  activeTab.value = enums[routerArray[1]]
+  activeTab2.value = enums[routerArray[2]]
+})
+const handleCommand = () => {}
 const closeMenus = () => {
   console.log('xxx');
 }
 const openMenus = () => {
   console.log('√√√');
+}
+const login =  () => {
+  isShow.value = true
+  console.log('xxx');
+}
+const closeDialog = () => {
+
 }
 </script>
 
@@ -287,12 +373,23 @@ const openMenus = () => {
             border-right-color: transparent;
           }
         }
+        .user-login {
+          color: #eeeeee3d;
+          font-size: 14px;
+        }
+        .user-login:hover {
+          color: #eee;
+          text-decoration: underline;
+          cursor: pointer;
+        }
       }
 
     }
   }
 
-  .red {
+  
+}
+.red {
     background-color: red;
     height: 36px;
 
@@ -326,5 +423,4 @@ const openMenus = () => {
     background-color: red;
     height: 5px;
   }
-}
 </style>

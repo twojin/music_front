@@ -1,9 +1,11 @@
 <template>
-  <LayOut></LayOut>
+  <div class="test">
+    <div>音乐人</div>
+  </div>
 </template>
 
 <script setup>
-import LayOut from '@/layout'
+
 </script>
 
 <style lang="scss">
